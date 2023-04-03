@@ -75,7 +75,7 @@ const no_button = document.querySelector("#no");
         no_button.addEventListener("click", () => {
             console.log("Opinion Erronea");
             const random_offset = Math.floor(Math.random() * 200);
-            set_new_song("Qawwali", random_offset, "IN");
+            set_new_song("Funk de Brasil", random_offset, "BR");
         });
 
         yes_button.addEventListener("click", () => {
