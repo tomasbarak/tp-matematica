@@ -9,7 +9,7 @@ const genres = {
     "pop": max_plays,
     "clásica": max_plays,
     "techno": max_plays,
-    "reggaeton": max_plays,
+    "reggaetón": max_plays,
     "hip hop": max_plays,
     "cumbia": max_plays,
     "funk de brasil": max_plays,
@@ -48,7 +48,6 @@ const callback = (EmbedController) => {
     EmbedController.addListener('ready', () => {
         clock.start();
         EmbedController.play();
-
     });
 
     EmbedController.addListener('playback_update', (state) => {
@@ -68,16 +67,21 @@ const callback = (EmbedController) => {
 };
 
 const set_new_song = (genre, offset, market) => {
-    fetch(`https://api.spotify.com/v1/search?q=genre:${genre}&type=track&market=${market}&limit=1&offset=${offset}`, {
-        method: "GET",
-        headers: new Headers({
-            'Authorization': 'Bearer BQB_IJ-xSd-ZyNlPlPdNBbPNodd_VYeJX3tiwnnNfvLK1LQAxES3jHpuZyHi577YLEG7SFmYxnozvzg4OamK7L8xx-dHfcuDL6ia2Zd8zFJj3HN3qxGk'
-        })
+    fetch(`http://localhost:8080/genreList`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            "genre": genre,
+            "market": market,
+            "limit": 50,
+        }),
     }).then(
         response => response.json()
     ).then(
         data => {
-            const track = data.tracks.items[0];
+            const track = data[offset - 1];
 
             let img = document.createElement('img');
             img.setAttribute('src', track.album.images[0].url);
