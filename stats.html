@@ -38,7 +38,7 @@
                 <div class="chart-container">
                     <canvas id="average" class="chart"></canvas>
                 </div>
-    
+
                 <div class="chart-container">
                     <canvas id="median" class="chart"></canvas>
                 </div>
@@ -47,16 +47,98 @@
             <div class="chart-container">
                 <canvas id="by-age" class="chart"></canvas>
             </div>
-            
+
         </section>
     </section>
-    
+
 
 
     <script>
+        let rock = [];
+        let pop = [];
+        let musica_clasica = [];
+        let musica_electronica = [];
+        let reggaeton = [];
+        let cumbia = [];
+        let hip_hop = [];
+        let funk_de_brasil = [];
+
+        let rock_tendency = [];
+        let pop_tendency = [];
+        let musica_clasica_tendency = [];
+        let musica_electronica_tendency = [];
+        let reggaeton_tendency = [];
+        let cumbia_tendency = [];
+        let hip_hop_tendency = [];
+        let funk_de_brasil_tendency = [];
+
+        function set_genre_by_age_range(range) {
+            const questions = [
+                "¿Qué tanto te gusta el Rock?",
+                "¿Qué tanto te gusta el Pop?",
+                "¿Qué tanto te gusta la Música Clásica?",
+                "¿Qué tanto te gusta la Música Electrónica?",
+                "¿Qué tanto te gusta el Reggaetón?",
+                "¿Qué tanto te gusta la Cumbia?",
+                "¿Qué tanto te gusta el Hip Hop?",
+                "¿Qué tanto te gusta el Funk de Brasil?"
+            ];
+
+            rock = data.filter(item => { return item["Rango de edad:"] == range }).map((item) => {
+                return item["¿Qué tanto te gusta el Rock?"]
+            })
+
+            rock_tendency = [ss.mean(rock), ss.median(rock)];
+
+            pop = data.filter(item => { return item["Rango de edad:"] == range }).map((item) => {
+                return item["¿Qué tanto te gusta el Pop?"]
+            })
+
+            pop_tendency = [ss.mean(pop), ss.median(pop)];
+
+            musica_clasica = data.filter(item => { return item["Rango de edad:"] == range }).map((item) => {
+                return item["¿Qué tanto te gusta el Música Clásica?"]
+            })
+
+            musica_clasica_tendency = [ss.mean(musica_clasica), ss.median(musica_clasica)];
+
+            musica_electronica = data.filter(item => { return item["Rango de edad:"] == range }).map((item) => {
+                return item["¿Qué tanto te gusta el Música Electrónica?"]
+            })
+
+            musica_electronica_tendency = [ss.mean(musica_electronica), ss.median(musica_electronica)];
+
+            reggaeton = data.filter(item => { return item["Rango de edad:"] == range }).map((item) => {
+                return item["¿Qué tanto te gusta el Reggaetón?"]
+            })
+
+            reggaeton_tendency = [ss.mean(reggaeton), ss.median(reggaeton)];
+
+            cumbia = data.filter(item => { return item["Rango de edad:"] == range }).map((item) => {
+                return item["¿Qué tanto te gusta el Cumbia?"]
+            })
+
+            cumbia_tendency = [ss.mean(cumbia), ss.median(cumbia)];
+
+            hip_hop = data.filter(item => { return item["Rango de edad:"] == range }).map((item) => {
+                return item["¿Qué tanto te gusta el Hip Hop?"]
+            })
+
+            hip_hop_tendency = [ss.mean(hip_hop), ss.median(hip_hop)];
+
+            funk_de_brasil = data.filter(item => { return item["Rango de edad:"] == range }).map((item) => {
+                return item["¿Qué tanto te gusta el Funk de Brasil?"]
+            })
+
+            funk_de_brasil_tendency = [ss.mean(funk_de_brasil), ss.median(funk_de_brasil)];
+
+        }
+
         function update_age() {
             const age_range = document.getElementById("age-selector").value;
-            
+            set_genre_by_age_range(age_range);
+            update_graph([rock_tendency[0], pop_tendency[0], musica_clasica_tendency[0], musica_electronica_tendency[0], reggaeton_tendency[0], cumbia_tendency[0], hip_hop_tendency[0], funk_de_brasil_tendency[0]], chart1);
+            update_graph([rock_tendency[1], pop_tendency[1], musica_clasica_tendency[1], musica_electronica_tendency[1], reggaeton_tendency[1], cumbia_tendency[1], hip_hop_tendency[1], funk_de_brasil_tendency[1]], chart2)
         }
 
         function update_graph(data, chart) {
@@ -66,24 +148,24 @@
 
             chart.update();
         }
-        
-        const rock = data.map((item) => item["¿Qué tanto te gusta el Rock?"]);
-        const pop = data.map((item) => item["¿Qué tanto te gusta el Pop?"]);
-        const musica_clasica = data.map((item) => item["¿Qué tanto te gusta la Música Clásica?"]);
-        const musica_electronica = data.map((item) => item["¿Qué tanto te gusta la Música Electrónica?"]);
-        const reggaeton = data.map((item) => item["¿Qué tanto te gusta el Reggaetón?"]);
-        const cumbia = data.map((item) => item["¿Qué tanto te gusta la Cumbia?"]);
-        const hip_hop = data.map((item) => item["¿Qué tanto te gusta el Hip Hop?"]);
-        const funk_de_brasil = data.map((item) => item["¿Qué tanto te gusta el Funk de Brasil?"]);
 
-        const rock_tendency = [ss.mean(rock), ss.median(rock)];
-        const pop_tendency = [ss.mean(pop), ss.median(pop)];
-        const musica_clasica_tendency = [ss.mean(musica_clasica), ss.median(musica_clasica)];
-        const musica_electronica_tendency = [ss.mean(musica_electronica), ss.median(musica_electronica)];
-        const reggaeton_tendency = [ss.mean(reggaeton), ss.median(reggaeton)];
-        const cumbia_tendency = [ss.mean(cumbia), ss.median(cumbia)];
-        const hip_hop_tendency = [ss.mean(hip_hop), ss.median(hip_hop)];
-        const funk_de_brasil_tendency = [ss.mean(funk_de_brasil), ss.median(funk_de_brasil)];
+        // const rock = data.map((item) => item["¿Qué tanto te gusta el Rock?"]);
+        // const pop = data.map((item) => item["¿Qué tanto te gusta el Pop?"]);
+        // const musica_clasica = data.map((item) => item["¿Qué tanto te gusta la Música Clásica?"]);
+        // const musica_electronica = data.map((item) => item["¿Qué tanto te gusta la Música Electrónica?"]);
+        // const reggaeton = data.map((item) => item["¿Qué tanto te gusta el Reggaetón?"]);
+        // const cumbia = data.map((item) => item["¿Qué tanto te gusta la Cumbia?"]);
+        // const hip_hop = data.map((item) => item["¿Qué tanto te gusta el Hip Hop?"]);
+        // const funk_de_brasil = data.map((item) => item["¿Qué tanto te gusta el Funk de Brasil?"]);
+
+        // const rock_tendency = [ss.mean(rock), ss.median(rock)];
+        // const pop_tendency = [ss.mean(pop), ss.median(pop)];
+        // const musica_clasica_tendency = [ss.mean(musica_clasica), ss.median(musica_clasica)];
+        // const musica_electronica_tendency = [ss.mean(musica_electronica), ss.median(musica_electronica)];
+        // const reggaeton_tendency = [ss.mean(reggaeton), ss.median(reggaeton)];
+        // const cumbia_tendency = [ss.mean(cumbia), ss.median(cumbia)];
+        // const hip_hop_tendency = [ss.mean(hip_hop), ss.median(hip_hop)];
+        // const funk_de_brasil_tendency = [ss.mean(funk_de_brasil), ss.median(funk_de_brasil)];
 
         const ctx = document.getElementById('average');
 
@@ -108,10 +190,18 @@
             options: {
                 scales: {
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true,
                     },
                     x: {
                         display: true
+                    }
+                },
+
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Promedio de calificación por genero',
+                        fullSize: true
                     }
                 }
             }
@@ -144,6 +234,14 @@
                     },
                     x: {
                         display: true
+                    }
+                },
+
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Media de calificación por genero',
+                        fullSize: true
                     }
                 }
             }
