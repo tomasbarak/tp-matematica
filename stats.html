@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stats</title>
+    <link rel="stylesheet" href="style/stats.css">
+    <script src='https://unpkg.com/simple-statistics@7.8.2/dist/simple-statistics.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="scripts/data.js"></script>
+</head>
+
+<body>
+    <section id="information-section">
+        <section id="control-section">
+
+        </section>
+
+        <section id="responses-quantity-section">
+            <a id="responses-quantity">200</a>
+            <h1 id="responses-quantity-label">Respuestas</h1>
+        </section>
+    </section>
+
+    <section id="visualization-section">
+        <section id="chart-section">
+
+            <div class="chart-container-row">
+                <div class="chart-container">
+                    <canvas id="average" class="chart"></canvas>
+                </div>
+    
+                <div class="chart-container">
+                    <canvas id="median" class="chart"></canvas>
+                </div>
+            </div>
+            
+        </section>
+    </section>
+    
+
+
+    <script>
+        const rock = data.map((item) => item["¿Qué tanto te gusta el Rock?"]);
+        const pop = data.map((item) => item["¿Qué tanto te gusta el Pop?"]);
+        const musica_clasica = data.map((item) => item["¿Qué tanto te gusta la Música Clásica?"]);
+        const musica_electronica = data.map((item) => item["¿Qué tanto te gusta la Música Electrónica?"]);
+        const reggaeton = data.map((item) => item["¿Qué tanto te gusta el Reggaetón?"]);
+        const cumbia = data.map((item) => item["¿Qué tanto te gusta la Cumbia?"]);
+        const hip_hop = data.map((item) => item["¿Qué tanto te gusta el Hip Hop?"]);
+        const funk_de_brasil = data.map((item) => item["¿Qué tanto te gusta el Funk de Brasil?"]);
+
+        const rock_tendency = [ss.mean(rock), ss.median(rock)];
+        const pop_tendency = [ss.mean(pop), ss.median(pop)];
+        const musica_clasica_tendency = [ss.mean(musica_clasica), ss.median(musica_clasica)];
+        const musica_electronica_tendency = [ss.mean(musica_electronica), ss.median(musica_electronica)];
+        const reggaeton_tendency = [ss.mean(reggaeton), ss.median(reggaeton)];
+        const cumbia_tendency = [ss.mean(cumbia), ss.median(cumbia)];
+        const hip_hop_tendency = [ss.mean(hip_hop), ss.median(hip_hop)];
+        const funk_de_brasil_tendency = [ss.mean(funk_de_brasil), ss.median(funk_de_brasil)];
+
+        const ctx = document.getElementById('average');
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Rock', 'Pop', 'Música Clásica', 'Música Electrónica', 'Reggaetón', 'Cumbia', 'Hip Hop', 'Funk de Brasil'],
+                showLabel: false,
+                datasets: [{
+                    label: 'Calificación',
+                    data: [rock_tendency[0], pop_tendency[0], musica_clasica_tendency[0], musica_electronica_tendency[0], reggaeton_tendency[0], cumbia_tendency[0], hip_hop_tendency[0], funk_de_brasil_tendency[0]],
+                    borderWidth: 1,
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.2)',
+                    ],
+
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                    ],
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    },
+                    x: {
+                        display: true
+                    }
+                }
+            }
+        });
+
+        const ctx2 = document.getElementById('median');
+
+        new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: ['Rock', 'Pop', 'Música Clásica', 'Música Electrónica', 'Reggaetón', 'Cumbia', 'Hip Hop', 'Funk de Brasil'],
+                showLabel: false,
+                datasets: [{
+                    label: 'Calificación',
+                    data: [rock_tendency[1], pop_tendency[1], musica_clasica_tendency[1], musica_electronica_tendency[1], reggaeton_tendency[1], cumbia_tendency[1], hip_hop_tendency[1], funk_de_brasil_tendency[1]],
+                    borderWidth: 1,
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.2)',
+                    ],
+
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                    ],
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    },
+                    x: {
+                        display: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
