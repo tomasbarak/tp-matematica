@@ -15,7 +15,6 @@ body {
     justify-content: flex-start;
     height: 100%;
     width: 100%;
-
 }
 
 #visualization-section {
@@ -24,7 +23,7 @@ body {
     width: 100%;
     height: 100%;
     margin: 0;
-    padding: 12.5px 50px ;
+    padding: 12.5px 50px;
     box-sizing: border-box;
     flex-direction: column;
     align-items: flex-start;
@@ -54,9 +53,9 @@ body {
     margin: 0;
     padding: 5px;
     box-sizing: border-box;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    justify-content: center;
+    justify-content: space-evenly;
 
     border-radius: 25px;
 
@@ -146,7 +145,7 @@ body {
     /* Pink */
     background: linear-gradient(315deg, #171717, #1c1c1c);
     box-shadow: -11px -11px 22px #151515, 11px 11px 22px #1f1f1f;
-    border: 2px solid rgba(100, 100, 255, 0.1); 
+    border: 2px solid rgba(100, 100, 255, 0.1);
     color: #fff;
     font-weight: bolder;
 }
@@ -169,4 +168,28 @@ body {
     align-items: center;
     justify-content: center;
     gap: 15px;
+}
+
+#age-range-label {
+    font-size: 1.5em;
+    font-weight: bolder;
+    color: #fff;
+}
+
+#age-selector {
+    outline: none;
+    display: flex;
+    border: none;
+    background: linear-gradient(145deg, #171717, #1c1c1c);
+    box-shadow:  5px 5px 10px #0a0a0a,
+                 -5px -5px 10px #2a2a2a;
+    color: #fff;
+    height: 50px;
+    width: 150px;
+    border-radius: 5px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 5px;
+    box-sizing: border-box;
 }
