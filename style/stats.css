@@ -75,6 +75,7 @@ body {
     align-items: center;
     justify-content: flex-start;
     border-radius: 25px;
+    gap: 25px;
 }
 
 #responses-quantity-section {
@@ -192,4 +193,48 @@ body {
     text-align: center;
     padding: 5px;
     box-sizing: border-box;
+}
+
+@media screen and (max-width: 1000px) {
+    #visualization-section {
+        padding: 15px;
+    }
+
+    #information-section {
+        padding: 15px;
+    }
+
+    #age-range-label {
+        font-size: 1em;
+    }
+
+    #age-selector {
+        font-size: 0.75em;
+        width: 100px;
+        height: 40px;
+    }
+
+    #control-section {
+        height: 75px;
+    }
+
+    #responses-quantity-section {
+        height: 75px;
+    }
+
+    #responses-quantity-label {
+        font-size: 1em;
+    }
+    .chart-container-row {
+        flex-direction: column;
+    }
+
+    .chart-container {
+        min-height: 300px;
+    }
+
+    .chart {
+        height: 100%;
+    }
+
 }

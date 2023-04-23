@@ -1,252 +1,573 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Stats</title>
-    <link rel="stylesheet" href="style/stats.css">
-    <script src='https://unpkg.com/simple-statistics@7.8.2/dist/simple-statistics.min.js'></script>
+    <link rel="stylesheet" href="style/stats.css" />
+    <script src="https://unpkg.com/simple-statistics@7.8.2/dist/simple-statistics.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="scripts/data.js"></script>
-</head>
+  </head>
 
-<body>
+  <body>
     <section id="information-section">
-        <section id="control-section">
-            <h1 id="age-range-label">Rango de edad: </h1>
-            <select onchange="update_age()" name="age-range" id="age-selector">
-                <option value="15 - 29">15 - 29</option>
-                <option value="30 - 44">30 - 44</option>
-                <option value="45 - 60">45 - 60</option>
-                <option value="61 - 75">61 - 75</option>
-                <option value="+75">+75</option>
-            </select>
-        </section>
+      <section id="control-section">
+        <h1 id="age-range-label">Rango de edad:</h1>
+        <select
+          autocomplete="off"
+          onchange="update_age()"
+          name="age-range"
+          id="age-selector"
+        >
+          <option selected value="All">Todos</option>
+          <option value="15 - 29">15 - 29</option>
+          <option value="30 - 44">30 - 44</option>
+          <option value="45 - 60">45 - 60</option>
+          <option value="61 - 75">61 - 75</option>
+          <option value="+75">+75</option>
+        </select>
+      </section>
 
-        <section id="responses-quantity-section">
-            <a id="responses-quantity">200</a>
-            <h1 id="responses-quantity-label">Respuestas</h1>
-        </section>
+      <section id="responses-quantity-section">
+        <a id="responses-quantity">...</a>
+        <script>document.getElementById("responses-quantity").innerHTML = data.length</script>
+        <h1 id="responses-quantity-label">Respuestas</h1>
+      </section>
     </section>
 
     <section id="visualization-section">
-        <section id="chart-section">
+      <section id="chart-section">
+        <div class="chart-container-row">
+          <div class="chart-container">
+            <canvas id="average" class="chart"></canvas>
+          </div>
 
-            <div class="chart-container-row">
-                <div class="chart-container">
-                    <canvas id="average" class="chart"></canvas>
-                </div>
+          <div class="chart-container">
+            <canvas id="median" class="chart"></canvas>
+          </div>
+        </div>
 
-                <div class="chart-container">
-                    <canvas id="median" class="chart"></canvas>
-                </div>
-            </div>
+        <div class="chart-container-row">
+          <div class="chart-container">
+            <canvas id="mode" class="chart"></canvas>
+          </div>
 
-            <div class="chart-container">
-                <canvas id="by-age" class="chart"></canvas>
-            </div>
-
-        </section>
+          <div class="chart-container">
+            <canvas id="variance" class="chart"></canvas>
+          </div>
+        </div>
+      </section>
     </section>
 
-
-
     <script>
-        let rock = [];
-        let pop = [];
-        let musica_clasica = [];
-        let musica_electronica = [];
-        let reggaeton = [];
-        let cumbia = [];
-        let hip_hop = [];
-        let funk_de_brasil = [];
+      let rock = [];
+      let pop = [];
+      let musica_clasica = [];
+      let musica_electronica = [];
+      let reggaeton = [];
+      let cumbia = [];
+      let hip_hop = [];
+      let funk_de_brasil = [];
 
-        let rock_tendency = [];
-        let pop_tendency = [];
-        let musica_clasica_tendency = [];
-        let musica_electronica_tendency = [];
-        let reggaeton_tendency = [];
-        let cumbia_tendency = [];
-        let hip_hop_tendency = [];
-        let funk_de_brasil_tendency = [];
+      let rock_tendency = [];
+      let pop_tendency = [];
+      let musica_clasica_tendency = [];
+      let musica_electronica_tendency = [];
+      let reggaeton_tendency = [];
+      let cumbia_tendency = [];
+      let hip_hop_tendency = [];
+      let funk_de_brasil_tendency = [];
 
-        function set_genre_by_age_range(range) {
-            const questions = [
-                "¿Qué tanto te gusta el Rock?",
-                "¿Qué tanto te gusta el Pop?",
-                "¿Qué tanto te gusta la Música Clásica?",
-                "¿Qué tanto te gusta la Música Electrónica?",
-                "¿Qué tanto te gusta el Reggaetón?",
-                "¿Qué tanto te gusta la Cumbia?",
-                "¿Qué tanto te gusta el Hip Hop?",
-                "¿Qué tanto te gusta el Funk de Brasil?"
-            ];
+      function set_genre_by_age_range(range) {
+        const questions = [
+          "¿Qué tanto te gusta el Rock?",
+          "¿Qué tanto te gusta el Pop?",
+          "¿Qué tanto te gusta la Música Clásica?",
+          "¿Qué tanto te gusta la Música Electrónica?",
+          "¿Qué tanto te gusta el Reggaetón?",
+          "¿Qué tanto te gusta la Cumbia?",
+          "¿Qué tanto te gusta el Hip Hop?",
+          "¿Qué tanto te gusta el Funk de Brasil?",
+        ];
 
-            rock = data.filter(item => { return item["Rango de edad:"] == range }).map((item) => {
-                return item["¿Qué tanto te gusta el Rock?"]
-            })
+        rock = data
+          .filter((item) => {
+            return range == "All"
+              ? item["Rango de edad:"] != undefined
+              : item["Rango de edad:"] == range;
+          })
+          .map((item) => {
+            return item["¿Qué tanto te gusta el Rock?"];
+          });
 
-            rock_tendency = [ss.mean(rock), ss.median(rock)];
+        console.log(rock);
 
-            pop = data.filter(item => { return item["Rango de edad:"] == range }).map((item) => {
-                return item["¿Qué tanto te gusta el Pop?"]
-            })
+        rock_tendency = [
+          ss.mean(rock),
+          ss.median(rock),
+          ss.mode(rock),
+          ss.variance(rock),
+        ];
 
-            pop_tendency = [ss.mean(pop), ss.median(pop)];
+        pop = data
+          .filter((item) => {
+            return range == "All"
+              ? item["Rango de edad:"] != undefined
+              : item["Rango de edad:"] == range;
+          })
+          .map((item) => {
+            return item["¿Qué tanto te gusta el Pop?"];
+          });
 
-            musica_clasica = data.filter(item => { return item["Rango de edad:"] == range }).map((item) => {
-                return item["¿Qué tanto te gusta el Música Clásica?"]
-            })
+        pop_tendency = [
+          ss.mean(pop),
+          ss.median(pop),
+          ss.mode(pop),
+          ss.variance(pop),
+        ];
 
-            musica_clasica_tendency = [ss.mean(musica_clasica), ss.median(musica_clasica)];
+        musica_clasica = data
+          .filter((item) => {
+            return range == "All"
+              ? item["Rango de edad:"] != undefined
+              : item["Rango de edad:"] == range;
+          })
+          .map((item) => {
+            return item["¿Qué tanto te gusta la Música Clásica?"];
+          });
 
-            musica_electronica = data.filter(item => { return item["Rango de edad:"] == range }).map((item) => {
-                return item["¿Qué tanto te gusta el Música Electrónica?"]
-            })
+        musica_clasica_tendency = [
+          ss.mean(musica_clasica),
+          ss.median(musica_clasica),
+          ss.mode(musica_clasica),
+          ss.variance(musica_clasica),
+        ];
 
-            musica_electronica_tendency = [ss.mean(musica_electronica), ss.median(musica_electronica)];
+        musica_electronica = data
+          .filter((item) => {
+            return range == "All"
+              ? item["Rango de edad:"] != undefined
+              : item["Rango de edad:"] == range;
+          })
+          .map((item) => {
+            return item["¿Qué tanto te gusta la Música Electrónica?"];
+          });
 
-            reggaeton = data.filter(item => { return item["Rango de edad:"] == range }).map((item) => {
-                return item["¿Qué tanto te gusta el Reggaetón?"]
-            })
+        musica_electronica_tendency = [
+          ss.mean(musica_electronica),
+          ss.median(musica_electronica),
+          ss.mode(musica_electronica),
+          ss.variance(musica_electronica),
+        ];
 
-            reggaeton_tendency = [ss.mean(reggaeton), ss.median(reggaeton)];
+        reggaeton = data
+          .filter((item) => {
+            return range == "All"
+              ? item["Rango de edad:"] != undefined
+              : item["Rango de edad:"] == range;
+          })
+          .map((item) => {
+            return item["¿Qué tanto te gusta el Reggaetón?"];
+          });
 
-            cumbia = data.filter(item => { return item["Rango de edad:"] == range }).map((item) => {
-                return item["¿Qué tanto te gusta el Cumbia?"]
-            })
+        reggaeton_tendency = [
+          ss.mean(reggaeton),
+          ss.median(reggaeton),
+          ss.mode(reggaeton),
+          ss.variance(reggaeton),
+        ];
 
-            cumbia_tendency = [ss.mean(cumbia), ss.median(cumbia)];
+        cumbia = data
+          .filter((item) => {
+            return range == "All"
+              ? item["Rango de edad:"] != undefined
+              : item["Rango de edad:"] == range;
+          })
+          .map((item) => {
+            return item["¿Qué tanto te gusta la Cumbia?"];
+          });
 
-            hip_hop = data.filter(item => { return item["Rango de edad:"] == range }).map((item) => {
-                return item["¿Qué tanto te gusta el Hip Hop?"]
-            })
+        cumbia_tendency = [
+          ss.mean(cumbia),
+          ss.median(cumbia),
+          ss.mode(cumbia),
+          ss.variance(cumbia),
+        ];
 
-            hip_hop_tendency = [ss.mean(hip_hop), ss.median(hip_hop)];
+        hip_hop = data
+          .filter((item) => {
+            return range == "All"
+              ? item["Rango de edad:"] != undefined
+              : item["Rango de edad:"] == range;
+          })
+          .map((item) => {
+            return item["¿Qué tanto te gusta el Hip Hop?"];
+          });
 
-            funk_de_brasil = data.filter(item => { return item["Rango de edad:"] == range }).map((item) => {
-                return item["¿Qué tanto te gusta el Funk de Brasil?"]
-            })
+        hip_hop_tendency = [
+          ss.mean(hip_hop),
+          ss.median(hip_hop),
+          ss.mode(hip_hop),
+          ss.variance(hip_hop),
+        ];
 
-            funk_de_brasil_tendency = [ss.mean(funk_de_brasil), ss.median(funk_de_brasil)];
+        funk_de_brasil = data
+          .filter((item) => {
+            return range == "All"
+              ? item["Rango de edad:"] != undefined
+              : item["Rango de edad:"] == range;
+          })
+          .map((item) => {
+            return item["¿Qué tanto te gusta el Funk de Brasil?"];
+          });
 
-        }
+        funk_de_brasil_tendency = [
+          ss.mean(funk_de_brasil),
+          ss.median(funk_de_brasil),
+          ss.mode(funk_de_brasil),
+          ss.variance(funk_de_brasil),
+        ];
+      }
 
-        function update_age() {
-            const age_range = document.getElementById("age-selector").value;
-            set_genre_by_age_range(age_range);
-            update_graph([rock_tendency[0], pop_tendency[0], musica_clasica_tendency[0], musica_electronica_tendency[0], reggaeton_tendency[0], cumbia_tendency[0], hip_hop_tendency[0], funk_de_brasil_tendency[0]], chart1);
-            update_graph([rock_tendency[1], pop_tendency[1], musica_clasica_tendency[1], musica_electronica_tendency[1], reggaeton_tendency[1], cumbia_tendency[1], hip_hop_tendency[1], funk_de_brasil_tendency[1]], chart2)
-        }
+      function update_age() {
+        const age_range = document.getElementById("age-selector").value;
+        set_genre_by_age_range(age_range);
+        update_graph(
+          [
+            rock_tendency[0],
+            pop_tendency[0],
+            musica_clasica_tendency[0],
+            musica_electronica_tendency[0],
+            reggaeton_tendency[0],
+            cumbia_tendency[0],
+            hip_hop_tendency[0],
+            funk_de_brasil_tendency[0],
+          ],
+          0,
+          chart1
+        );
+        update_graph(
+          [
+            rock_tendency[1],
+            pop_tendency[1],
+            musica_clasica_tendency[1],
+            musica_electronica_tendency[1],
+            reggaeton_tendency[1],
+            cumbia_tendency[1],
+            hip_hop_tendency[1],
+            funk_de_brasil_tendency[1],
+          ],
+          0,
+          chart2
+        );
 
-        function update_graph(data, chart) {
-            chart.data.datasets.forEach(dataset => {
-                dataset.data = data;
-            });
+        update_graph(
+          [
+            rock_tendency[2],
+            pop_tendency[2],
+            musica_clasica_tendency[2],
+            musica_electronica_tendency[2],
+            reggaeton_tendency[2],
+            cumbia_tendency[2],
+            hip_hop_tendency[2],
+            funk_de_brasil_tendency[2],
+          ],
+          0,
+          chart3
+        );
 
-            chart.update();
-        }
+        update_graph(
+          [
+            rock_tendency[0],
+            pop_tendency[0],
+            musica_clasica_tendency[0],
+            musica_electronica_tendency[0],
+            reggaeton_tendency[0],
+            cumbia_tendency[0],
+            hip_hop_tendency[0],
+            funk_de_brasil_tendency[0],
+          ],
+          0,
+          chart4
+        );
 
-        // const rock = data.map((item) => item["¿Qué tanto te gusta el Rock?"]);
-        // const pop = data.map((item) => item["¿Qué tanto te gusta el Pop?"]);
-        // const musica_clasica = data.map((item) => item["¿Qué tanto te gusta la Música Clásica?"]);
-        // const musica_electronica = data.map((item) => item["¿Qué tanto te gusta la Música Electrónica?"]);
-        // const reggaeton = data.map((item) => item["¿Qué tanto te gusta el Reggaetón?"]);
-        // const cumbia = data.map((item) => item["¿Qué tanto te gusta la Cumbia?"]);
-        // const hip_hop = data.map((item) => item["¿Qué tanto te gusta el Hip Hop?"]);
-        // const funk_de_brasil = data.map((item) => item["¿Qué tanto te gusta el Funk de Brasil?"]);
+        update_graph(
+          [
+            rock_tendency[3],
+            pop_tendency[3],
+            musica_clasica_tendency[3],
+            musica_electronica_tendency[3],
+            reggaeton_tendency[3],
+            cumbia_tendency[3],
+            hip_hop_tendency[3],
+            funk_de_brasil_tendency[3],
+          ],
+          1,
+          chart4
+        );
+      }
 
-        // const rock_tendency = [ss.mean(rock), ss.median(rock)];
-        // const pop_tendency = [ss.mean(pop), ss.median(pop)];
-        // const musica_clasica_tendency = [ss.mean(musica_clasica), ss.median(musica_clasica)];
-        // const musica_electronica_tendency = [ss.mean(musica_electronica), ss.median(musica_electronica)];
-        // const reggaeton_tendency = [ss.mean(reggaeton), ss.median(reggaeton)];
-        // const cumbia_tendency = [ss.mean(cumbia), ss.median(cumbia)];
-        // const hip_hop_tendency = [ss.mean(hip_hop), ss.median(hip_hop)];
-        // const funk_de_brasil_tendency = [ss.mean(funk_de_brasil), ss.median(funk_de_brasil)];
+      function update_graph(data, dataset_id, chart) {
+        let dataset = chart.data.datasets[dataset_id];
+        dataset.data = data;
+        chart.update();
+      }
 
-        const ctx = document.getElementById('average');
+      // const rock = data.map((item) => item["¿Qué tanto te gusta el Rock?"]);
+      // const pop = data.map((item) => item["¿Qué tanto te gusta el Pop?"]);
+      // const musica_clasica = data.map((item) => item["¿Qué tanto te gusta la Música Clásica?"]);
+      // const musica_electronica = data.map((item) => item["¿Qué tanto te gusta la Música Electrónica?"]);
+      // const reggaeton = data.map((item) => item["¿Qué tanto te gusta el Reggaetón?"]);
+      // const cumbia = data.map((item) => item["¿Qué tanto te gusta la Cumbia?"]);
+      // const hip_hop = data.map((item) => item["¿Qué tanto te gusta el Hip Hop?"]);
+      // const funk_de_brasil = data.map((item) => item["¿Qué tanto te gusta el Funk de Brasil?"]);
 
-        const chart1 = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Rock', 'Pop', 'Música Clásica', 'Música Electrónica', 'Reggaetón', 'Cumbia', 'Hip Hop', 'Funk de Brasil'],
-                showLabel: false,
-                datasets: [{
-                    label: 'Calificación',
-                    data: [rock_tendency[0], pop_tendency[0], musica_clasica_tendency[0], musica_electronica_tendency[0], reggaeton_tendency[0], cumbia_tendency[0], hip_hop_tendency[0], funk_de_brasil_tendency[0]],
-                    borderWidth: 1,
-                    backgroundColor: [
-                        'rgba(54, 162, 235, 0.2)',
-                    ],
+      // const rock_tendency = [ss.mean(rock), ss.median(rock)];
+      // const pop_tendency = [ss.mean(pop), ss.median(pop)];
+      // const musica_clasica_tendency = [ss.mean(musica_clasica), ss.median(musica_clasica)];
+      // const musica_electronica_tendency = [ss.mean(musica_electronica), ss.median(musica_electronica)];
+      // const reggaeton_tendency = [ss.mean(reggaeton), ss.median(reggaeton)];
+      // const cumbia_tendency = [ss.mean(cumbia), ss.median(cumbia)];
+      // const hip_hop_tendency = [ss.mean(hip_hop), ss.median(hip_hop)];
+      // const funk_de_brasil_tendency = [ss.mean(funk_de_brasil), ss.median(funk_de_brasil)];
 
-                    borderColor: [
-                        'rgba(54, 162, 235, 1)',
-                    ],
-                }]
+      const ctx = document.getElementById("average");
+
+      const chart1 = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: [
+            "Rock",
+            "Pop",
+            "Música Clásica",
+            "Música Electrónica",
+            "Reggaetón",
+            "Cumbia",
+            "Hip Hop",
+            "Funk de Brasil",
+          ],
+          showLabels: false,
+          datasets: [
+            {
+              label: "Calificación",
+              data: [
+                rock_tendency[0],
+                pop_tendency[0],
+                musica_clasica_tendency[0],
+                musica_electronica_tendency[0],
+                reggaeton_tendency[0],
+                cumbia_tendency[0],
+                hip_hop_tendency[0],
+                funk_de_brasil_tendency[0],
+              ],
+              borderWidth: 1,
+              backgroundColor: ["rgba(54, 162, 235, 0.2)"],
+
+              borderColor: ["rgba(54, 162, 235, 1)"],
             },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                    },
-                    x: {
-                        display: true
-                    }
-                },
-
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Promedio de calificación por genero',
-                        fullSize: true
-                    }
-                }
-            }
-        });
-
-        const ctx2 = document.getElementById('median');
-
-        const chart2 = new Chart(ctx2, {
-            type: 'bar',
-            data: {
-                labels: ['Rock', 'Pop', 'Música Clásica', 'Música Electrónica', 'Reggaetón', 'Cumbia', 'Hip Hop', 'Funk de Brasil'],
-                showLabel: false,
-                datasets: [{
-                    label: 'Calificación',
-                    data: [rock_tendency[1], pop_tendency[1], musica_clasica_tendency[1], musica_electronica_tendency[1], reggaeton_tendency[1], cumbia_tendency[1], hip_hop_tendency[1], funk_de_brasil_tendency[1]],
-                    borderWidth: 1,
-                    backgroundColor: [
-                        'rgba(54, 162, 235, 0.2)',
-                    ],
-
-                    borderColor: [
-                        'rgba(54, 162, 235, 1)',
-                    ],
-                }]
+          ],
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
             },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    },
-                    x: {
-                        display: true
-                    }
-                },
+            x: {
+              display: true,
+            },
+          },
+          maintainAspectRatio: false,
+          responsive: true,
+          onResize: function (chart, size) {
+            chart.options.plugins.title.fullSize = true;
+          },
 
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Media de calificación por genero',
-                        fullSize: true
-                    }
-                }
-            }
-        });
+          plugins: {
+            title: {
+              display: true,
+              text: "Promedio de calificación por genero",
+              fullSize: true,
+            },
+          },
+        },
+      });
+
+      const ctx2 = document.getElementById("median");
+
+      const chart2 = new Chart(ctx2, {
+        type: "bar",
+        data: {
+          labels: [
+            "Rock",
+            "Pop",
+            "Música Clásica",
+            "Música Electrónica",
+            "Reggaetón",
+            "Cumbia",
+            "Hip Hop",
+            "Funk de Brasil",
+          ],
+          showLabel: false,
+          datasets: [
+            {
+              label: "Calificación",
+              data: [
+                rock_tendency[1],
+                pop_tendency[1],
+                musica_clasica_tendency[1],
+                musica_electronica_tendency[1],
+                reggaeton_tendency[1],
+                cumbia_tendency[1],
+                hip_hop_tendency[1],
+                funk_de_brasil_tendency[1],
+              ],
+              borderWidth: 1,
+              backgroundColor: ["rgba(0, 255, 159, 0.2)"],
+
+              borderColor: ["rgba(0, 255, 159, 1)"],
+            },
+          ],
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+            x: {
+              display: true,
+            },
+          },
+          maintainAspectRatio: false,
+          responsive: true,
+          plugins: {
+            title: {
+              display: true,
+              text: "Media de calificación por genero",
+              fullSize: true,
+            },
+          },
+        },
+      });
+
+      const ctx3 = document.getElementById("mode");
+
+      const chart3 = new Chart(ctx3, {
+        type: "bar",
+        data: {
+          labels: [
+            "Rock",
+            "Pop",
+            "Música Clásica",
+            "Música Electrónica",
+            "Reggaetón",
+            "Cumbia",
+            "Hip Hop",
+            "Funk de Brasil",
+          ],
+          showLabel: false,
+          datasets: [
+            {
+              label: "Calificación",
+              data: [
+                rock_tendency[2],
+                pop_tendency[2],
+                musica_clasica_tendency[2],
+                musica_electronica_tendency[2],
+                reggaeton_tendency[2],
+                cumbia_tendency[2],
+                hip_hop_tendency[2],
+                funk_de_brasil_tendency[2],
+              ],
+              borderWidth: 1,
+              backgroundColor: ["rgba(189, 0, 255, 0.2)"],
+
+              borderColor: ["rgba(189, 0, 255, 1)"],
+            },
+          ],
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+            x: {
+              display: true,
+            },
+          },
+          maintainAspectRatio: false,
+          responsive: true,
+
+          plugins: {
+            title: {
+              display: true,
+              text: "Moda de calificación por genero",
+              fullSize: true,
+            },
+          },
+        },
+      });
+
+      const ctx4 = document.getElementById("variance");
+
+      const chart4 = new Chart(ctx4, {
+        data: {
+          labels: [
+            "Rock",
+            "Pop",
+            "Música Clásica",
+            "Música Electrónica",
+            "Reggaetón",
+            "Cumbia",
+            "Hip Hop",
+            "Funk de Brasil",
+          ],
+          showLabel: false,
+          datasets: [
+            {
+              type: "bar",
+              label: "Promedio de calificación",
+              data: [],
+              borderWidth: 1,
+              backgroundColor: ["rgba(54, 162, 235, 0.2)"],
+
+              borderColor: ["rgba(54, 162, 235, 1)"],
+            },
+            {
+              type: "line",
+              label: "Varianza de calificación",
+              data: [],
+              borderWidth: 1,
+              backgroundColor: ["rgba(255, 211, 0, 0.2)"],
+
+              borderColor: ["rgba(255, 211, 0, 1)"],
+            },
+          ],
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+            x: {
+              display: true,
+            },
+          },
+          maintainAspectRatio: false,
+          responsive: true,
+
+          plugins: {
+            title: {
+              display: true,
+              text: "Varianza de calificación por genero",
+              fullSize: true,
+            },
+          },
+        },
+      });
+
+      update_age();
     </script>
-</body>
-
+  </body>
 </html>
