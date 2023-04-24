@@ -32,13 +32,19 @@
 
       <section id="responses-quantity-section">
         <a id="responses-quantity">...</a>
-        <script>document.getElementById("responses-quantity").innerHTML = data.length</script>
+        <script>
+          document.getElementById("responses-quantity").innerHTML = data.length;
+        </script>
         <h1 id="responses-quantity-label">Respuestas</h1>
       </section>
     </section>
 
     <section id="visualization-section">
       <section id="chart-section">
+        <div class="chart-container">
+          <canvas id="age-percent" class="chart"></canvas>
+        </div>
+
         <div class="chart-container-row">
           <div class="chart-container">
             <canvas id="average" class="chart"></canvas>
@@ -58,6 +64,10 @@
             <canvas id="variance" class="chart"></canvas>
           </div>
         </div>
+
+        <!-- <div class="chart-container">
+        <canvas id="standard-deviation" class="chart"></canvas>
+      </div> -->
       </section>
     </section>
 
@@ -79,6 +89,22 @@
       let cumbia_tendency = [];
       let hip_hop_tendency = [];
       let funk_de_brasil_tendency = [];
+
+      let age_ranges_percentages = {
+        "15 - 29": 0,
+        "30 - 44": 0,
+        "45 - 60": 0,
+        "61 - 75": 0,
+        "+75": 0,
+      };
+
+      function get_percentages_by_age_range(range) {
+        let percentage = data.filter((item) => {
+          return item["Rango de edad:"] == range;
+        }).length
+
+        return (percentage / data.length) * 100;
+      }
 
       function set_genre_by_age_range(range) {
         const questions = [
@@ -109,6 +135,7 @@
           ss.median(rock),
           ss.mode(rock),
           ss.variance(rock),
+          ss.standardDeviation(rock),
         ];
 
         pop = data
@@ -126,6 +153,7 @@
           ss.median(pop),
           ss.mode(pop),
           ss.variance(pop),
+          ss.standardDeviation(pop),
         ];
 
         musica_clasica = data
@@ -143,6 +171,7 @@
           ss.median(musica_clasica),
           ss.mode(musica_clasica),
           ss.variance(musica_clasica),
+          ss.standardDeviation(musica_clasica),
         ];
 
         musica_electronica = data
@@ -160,6 +189,7 @@
           ss.median(musica_electronica),
           ss.mode(musica_electronica),
           ss.variance(musica_electronica),
+          ss.standardDeviation(musica_electronica),
         ];
 
         reggaeton = data
@@ -177,6 +207,7 @@
           ss.median(reggaeton),
           ss.mode(reggaeton),
           ss.variance(reggaeton),
+          ss.standardDeviation(reggaeton),
         ];
 
         cumbia = data
@@ -194,6 +225,7 @@
           ss.median(cumbia),
           ss.mode(cumbia),
           ss.variance(cumbia),
+          ss.standardDeviation(cumbia),
         ];
 
         hip_hop = data
@@ -211,6 +243,7 @@
           ss.median(hip_hop),
           ss.mode(hip_hop),
           ss.variance(hip_hop),
+          ss.standardDeviation(hip_hop),
         ];
 
         funk_de_brasil = data
@@ -228,11 +261,18 @@
           ss.median(funk_de_brasil),
           ss.mode(funk_de_brasil),
           ss.variance(funk_de_brasil),
+          ss.standardDeviation(funk_de_brasil),
         ];
       }
 
       function update_age() {
         const age_range = document.getElementById("age-selector").value;
+        age_ranges_percentages["15 - 29"] = get_percentages_by_age_range("15 - 29");
+        age_ranges_percentages["30 - 44"] = get_percentages_by_age_range("30 - 44");
+        age_ranges_percentages["45 - 60"] = get_percentages_by_age_range("45 - 60");
+        age_ranges_percentages["61 - 75"] = get_percentages_by_age_range("61 - 75");
+        age_ranges_percentages["+75"] = get_percentages_by_age_range("+75");
+
         set_genre_by_age_range(age_range);
         update_graph(
           [
@@ -306,6 +346,18 @@
           ],
           1,
           chart4
+        );
+
+        update_graph(
+          [
+            age_ranges_percentages["15 - 29"],
+            age_ranges_percentages["30 - 44"],
+            age_ranges_percentages["45 - 60"],
+            age_ranges_percentages["61 - 75"],
+            age_ranges_percentages["+75"],
+          ],
+          0,
+          chart5
         );
       }
 
@@ -387,7 +439,7 @@
           plugins: {
             title: {
               display: true,
-              text: "Promedio de calificación por genero",
+              text: "Promedio de calificación por género",
               fullSize: true,
             },
           },
@@ -444,7 +496,7 @@
           plugins: {
             title: {
               display: true,
-              text: "Media de calificación por genero",
+              text: "Mediana de calificación por género",
               fullSize: true,
             },
           },
@@ -502,7 +554,7 @@
           plugins: {
             title: {
               display: true,
-              text: "Moda de calificación por genero",
+              text: "Moda de calificación por género",
               fullSize: true,
             },
           },
@@ -531,7 +583,6 @@
               data: [],
               borderWidth: 1,
               backgroundColor: ["rgba(54, 162, 235, 0.2)"],
-
               borderColor: ["rgba(54, 162, 235, 1)"],
             },
             {
@@ -560,7 +611,65 @@
           plugins: {
             title: {
               display: true,
-              text: "Varianza de calificación por genero",
+              text: "Varianza de calificación por género",
+              fullSize: true,
+            },
+          },
+        },
+      });
+
+      const ctx5 = document.getElementById("age-percent");
+
+      const chart5 = new Chart(ctx5, {
+        type: "pie",
+        data: {
+          labels: [
+            "15 a 29",
+            "30 a 44",
+            "45 a 60",
+            "61 a 75",
+            "75 o más"
+          ],
+          showLabel: false,
+          datasets: [
+            {
+              label: "Porcentaje de respuestas según rangos de edad",
+              data: [],
+              borderWidth: 1,
+              backgroundColor: [
+                "rgba(162, 35, 29, 0.2)",
+                "rgba(49, 127, 67, 0.2)",
+                "rgba(6, 57, 113, 0.2)",
+                "rgba(255, 255, 0, 0.2)",
+                "rgba(130, 137, 143, 0.2)"
+              ],
+
+              borderColor: [
+                "rgba(162, 35, 29, 1)",
+                "rgba(49, 127, 67, 1)",
+                "rgba(6, 57, 113, 1)",
+                "rgba(255, 255, 0, 1)",
+                "rgba(130, 137, 143, 1)"
+              ],
+            },
+          ],
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+            x: {
+              display: true,
+            },
+          },
+          maintainAspectRatio: false,
+          responsive: true,
+
+          plugins: {
+            title: {
+              display: true,
+              text: "Porcentaje de respuestas según rangos de edad",
               fullSize: true,
             },
           },
