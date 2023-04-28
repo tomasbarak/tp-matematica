@@ -178,7 +178,7 @@ body {
     color: #fff;
 }
 
-#age-selector {
+.selector {
     outline: none;
     display: flex;
     border: none;
@@ -194,6 +194,35 @@ body {
     text-align: center;
     padding: 5px;
     box-sizing: border-box;
+}
+
+#g-pref {
+    min-height: 400px;
+}
+
+#table-link {
+    display: flex;
+    width: 100%;
+    height: 50px;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5em;
+    font-weight: bolder;
+    color: #fff;
+    gap: 5px
+}
+
+#table-link > a {
+    text-decoration: none;
+    /* dark cyberpunk blue */
+    color: rgba(100, 100, 255, 0.5);
+}
+
+#table-link > a:hover {
+    text-decoration: underline;
+    /* dark cyberpunk blue */
+    color: rgba(100, 100, 255, 1);
 }
 
 @media screen and (max-width: 1000px) {
